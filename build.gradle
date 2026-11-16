@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'jacoco'
+}
+
+group = 'ru.pos'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+    options.encoding = 'UTF-8'
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
+}
+
+test { useJUnitPlatform() }
+
+jacoco { toolVersion = '0.8.15' }
+jacocoTestReport {
+    dependsOn test
+    reports { xml.required = true; html.required = true; csv.required = false }
+}
+
+application { mainClass = 'ru.pos.bootstrap.Main' }
+
+jar {
+    manifest { attributes('Main-Class': application.mainClass.get()) }
+}
+
